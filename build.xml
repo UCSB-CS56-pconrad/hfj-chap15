@@ -1,0 +1,98 @@
+<project name="hfj_chap15" default="all" basedir=".">
+
+  <!-- The following line gives us access to environment variables
+       such as HOME, USER, HOSTNAME etc. through env.HOME, env.USER, etc. -->
+
+  <property environment="env" />
+
+  <!-- Set global properties for this build -->
+  <property name="app.name"    value="hfj_chap15" />
+  <property name="dir.src" value="src"/>
+  <property name="dir.build" value="build" /> 
+  <property name="dir.javadocs" location="javadoc" />
+    <property name="main.class" location="TBD" />
+  
+  <!-- all is the default target (specified in the project open tag).
+       It is what happens when we just type "ant" at the command line -->
+
+  <target name="all"
+	  depends="compile, javadoc, test"
+	  description="compile, javadoc and test"/>
+
+  <target name="prepare" >
+     <mkdir dir="${dir.build}"/>
+  </target>
+
+  <!-- Specify what to compile -->
+  <target name="compile" depends="prepare" description="compile the code">
+    <javac srcdir="${dir.src}"
+	   destdir="${dir.build}"
+	   includeantruntime="False" >
+
+        <compilerarg value="-Xlint:unchecked"/>
+       <classpath>
+         <pathelement location="lib/junit-4.8.2.jar"/>
+       </classpath>
+
+    </javac>
+  </target>
+
+  <target name="javadoc" description="make the javadoc">
+     <mkdir dir="${dir.javadocs}"/>
+
+     <javadoc 
+            destdir="${dir.javadocs}"
+            classpath="${dir.build}"
+            windowtitle="${app.name} compiled by ${env.USER}"
+            doctitle="&lt;h1&gt;${app.name} compiled by ${env.USER}&lt;/h1&gt;">
+       <fileset dir="${dir.src}" >
+         <include name="*.java"/>
+       </fileset>
+       <classpath>
+         <pathelement location="lib/junit-4.8.2.jar"/>
+       </classpath>
+
+     </javadoc>
+
+  </target>
+
+  <target name="clean" description="clean up everything">
+
+    <delete dir="${dir.javadocs}" failonerror="false"/>
+
+    <delete failonerror="false">
+      <fileset dir="${dir.build}" includes="**/*.class"/>
+    </delete>
+
+  </target>
+
+   <target name="test" depends="prepare,compile" description="run JUnit tests">
+
+   <junit haltonerror="no" haltonfailure="no">
+       <classpath>
+         <pathelement location="lib/junit-4.8.2.jar"/>
+         <pathelement location="${dir.build}"/>
+       </classpath>
+
+       <batchtest fork="yes">
+          <fileset dir="${dir.src}">
+            <!-- this will pick up every class with a name ending in Test -->
+            <include name="**/*Test*.java"/>
+          </fileset>
+       </batchtest>
+
+       <!-- the type="plain" usefile="false" gives us
+            detailed output on the screen when tests fail.
+            An shorter alterantive is printsummary="yes" on the junit open tag -->
+        <formatter type="plain" usefile="false" /> 
+       
+    </junit>
+
+</target>
+
+<target name="run" depends="compile,test" description="run GUI" >
+  <java classpath="build" classname="${main.class}" fork="true">
+  </java>
+</target>
+
+</project>
