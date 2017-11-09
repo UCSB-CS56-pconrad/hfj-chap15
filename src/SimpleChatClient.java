@@ -81,7 +81,7 @@ public class SimpleChatClient
 	}
 	
     public static void main(String[] args) {
-		int portToUse = VerySimpleChatServer.getPortNumFromArgs(args);
+		int portToUse = VerySimpleChatServer.getPortNumFromArgs(args,1);
         new SimpleChatClient(args[0],portToUse).go();
     }
     

@@ -47,13 +47,13 @@ public class VerySimpleChatServer
 
 	
 
-	public static int getPortNumFromArgs(String [] args) {
+	public static int getPortNumFromArgs(String [] args, int whereToLook) {
 		int portToUse = PORT; // use the default
-		if (args.length > 0) {
+		if (args.length > whereToLook) {
 			try {
-				portToUse = Integer.parseInt(args[0]);
+				portToUse = Integer.parseInt(args[whereToLook]);
 			} catch (NumberFormatException nfe) {
-				System.err.println("Could not convert " + args[0] +
+				System.err.println("Could not convert " + args[whereToLook] +
 								   "to a port number");
 				System.exit(1);
 			}
@@ -62,7 +62,7 @@ public class VerySimpleChatServer
 	}
 	
     public static void main(String[] args) {
-		int portToUse = getPortNumFromArgs(args);
+		int portToUse = getPortNumFromArgs(args,0);
 		System.out.println("Listening on port " + portToUse + "...");
         new VerySimpleChatServer(portToUse).go();
     }
