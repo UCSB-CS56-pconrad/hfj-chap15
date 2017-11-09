@@ -24,12 +24,13 @@
   </target>
 
   <!-- Specify what to compile -->
+
   <target name="compile" depends="prepare" description="compile the code">
     <javac srcdir="${dir.src}"
 	   destdir="${dir.build}"
 	   includeantruntime="False" >
 
-        <compilerarg value="-Xlint:unchecked"/>
+       <compilerarg value="-Xlint:unchecked"/> 
        <classpath>
          <pathelement location="lib/junit-4.8.2.jar"/>
        </classpath>

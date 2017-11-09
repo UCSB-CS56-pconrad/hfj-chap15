@@ -1,6 +1,7 @@
 package chap15;
 import java.io.*;
 import java.net.*;
+import java.net.Socket;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,6 +14,9 @@ public class SimpleChatClient
     BufferedReader reader;
     PrintWriter writer;
     Socket sock;
+
+	String host;
+	int port;
     
     public void go() {
         JFrame frame = new JFrame("Ludicrously Simple Chat Client");
@@ -43,7 +47,7 @@ public class SimpleChatClient
     
     private void setUpNetworking() {
         try {
-            sock = new Socket("127.0.0.1", 5000);
+            sock = new Socket(this.host,this.port);
             InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
             reader = new BufferedReader(streamReader);
             writer = new PrintWriter(sock.getOutputStream());
@@ -69,9 +73,16 @@ public class SimpleChatClient
             outgoing.requestFocus();
         }
     }
-    
+
+	public SimpleChatClient(String host, int port) {
+		this.host = host;
+		this.port = port;
+		
+	}
+	
     public static void main(String[] args) {
-        new SimpleChatClient().go();
+		int portToUse = VerySimpleChatServer.getPortNumFromArgs(args);
+        new SimpleChatClient(args[0],portToUse).go();
     }
     
     class IncomingReader implements Runnable {

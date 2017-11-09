@@ -4,10 +4,23 @@ import java.net.*;
 import java.util.*;
 
 
+
 public class VerySimpleChatServer
 {
-    ArrayList<PrintWriter> clientOutputStreams; // WAS: ArrayList clientOutputStreams;
-    
+	
+	public static final int PORT=5000;
+
+	private int portToUse;
+
+	public VerySimpleChatServer(int portToUse) {
+		this.portToUse = portToUse;
+	}
+
+	
+	ArrayList<PrintWriter> clientOutputStreams;
+	// WAS: 
+    // ArrayList clientOutputStreams;
+	
     public class ClientHandler implements Runnable {
         BufferedReader reader;
         Socket sock;
@@ -31,15 +44,35 @@ public class VerySimpleChatServer
             } catch (Exception ex) { ex.printStackTrace(); }
         }
     }
-    
+
+	
+
+	public static int getPortNumFromArgs(String [] args) {
+		int portToUse = PORT; // use the default
+		if (args.length > 0) {
+			try {
+				portToUse = Integer.parseInt(args[0]);
+			} catch (NumberFormatException nfe) {
+				System.err.println("Could not convert " + args[0] +
+								   "to a port number");
+				System.exit(1);
+			}
+		}
+		return portToUse;
+	}
+	
     public static void main(String[] args) {
-        new VerySimpleChatServer().go();
+		int portToUse = getPortNumFromArgs(args);
+		System.out.println("Listening on port " + portToUse + "...");
+        new VerySimpleChatServer(portToUse).go();
     }
     
     public void go() {
-        clientOutputStreams = new ArrayList<PrintWriter>();  // WAS: newArrayList();
+        clientOutputStreams = new ArrayList<PrintWriter>();
+		// clientOutputStreams = new ArrayList();
+				// WAS: new ArrayList();
         try {
-            ServerSocket serverSock = new ServerSocket(5000);
+            ServerSocket serverSock = new ServerSocket(this.portToUse);
             while(true) {
                 Socket clientSocket = serverSock.accept();
                 PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
